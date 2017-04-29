@@ -1,0 +1,29 @@
+{
+  "name": "HashTagFeed2",
+  "description": "A feed for the #HasTag specified by the user",
+  "main": "",
+  "authors": [
+    "[object Object]"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "twitter",
+    "hashtag",
+    "feed"
+  ],
+  "homepage": "https://github.com/dbalaji/app-twitter-hashtag",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootswatch-dist": "paper",
+    "angular": "^1.6.4",
+    "angular-bootstrap": "^2.5.0",
+    "font-awesome": "^4.7.0"
+  }
+}
