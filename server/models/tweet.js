@@ -1,4 +1,7 @@
 
+var mongoose= require('mongoose'),
+    Schema  = mongoose.Schema;
+
 module.exports= function (app) {
 
     var schema= new Schema({

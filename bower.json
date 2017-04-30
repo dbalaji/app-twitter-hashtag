@@ -24,6 +24,7 @@
     "bootswatch-dist": "paper",
     "angular": "^1.6.4",
     "angular-bootstrap": "^2.5.0",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "moment": "^2.18.1"
   }
 }

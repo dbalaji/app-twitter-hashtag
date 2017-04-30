@@ -3,12 +3,40 @@
  */
 
 angular.module('app')
-.controller("AppCtrl", function($scope){
+.controller("AppCtrl", function($scope, HashTagFeed, socketFactory){
 
-    $scope.init= function () {
-
+    $scope.input= {
+        hash_tag    : ""
     };
 
+    $scope.hash_tag= undefined;
+    $scope.init= function () {
+        if ($scope.hash_tag) {
+            $scope.input.hash_tag= $scope.hash_tag;
+        }
+        var mySocket = socketFactory();
+        HashTagFeed.get($scope.hash_tag)
+             .then(function (res) {
+                 $scope.records= res.data.records;
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
 
+    $scope.subscribe= function (e) {
+        if (e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        HashTagFeed.subscribe($scope.input.hash_tag)
+            .then(function () {
+                
+            })
+            .catch(function () {
+                
+            });
+    };
 
 });

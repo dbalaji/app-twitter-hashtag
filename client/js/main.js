@@ -1,7 +1,8 @@
 
 var modules=[
     //'ngSanitize',
-    'ui.bootstrap',
+    "ui.bootstrap",
+    "btford.socket-io"
     //"sticky",
     //'ng-sweet-alert'
 ];

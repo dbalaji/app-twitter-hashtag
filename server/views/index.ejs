@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css" media="screen">
         <link rel="stylesheet" href="/css/custom.css" media="screen">
     </head>
-    <body ng-controller="AppCtrl">
+    <body ng-controller="AppCtrl" ng-init="hash_tag='<%=hash_tag%>';init();">
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -20,28 +20,53 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
+                <form class="navbar-form navbar-left" role="search" ng-submit="subscribe($event)">
+                    <div class="form-group">
+                        <input class="form-control"
+                               placeholder="#Tag"
+                               type="text"
+                                ng-model="input.hash_tag">
+                    </div>
+                    <button type="submit" class="btn btn-default">Subscribe</button>
+                </form>
                 <div class="navbar-collapse collapse" id="navbar-main">
                     <ul class="nav navbar-nav">
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                        <a class="btn btn-link">
-                            <i class="fa fa-cogs">Settings</i>
-                        </a>
-                        </li>
+                        <!--<li>-->
+                            <!--<a class="btn btn-link">-->
+                                <!--<i class="fa fa-cogs">Settings</i>-->
+                            <!--</a>-->
+                        <!--</li>-->
                     </ul>
                 </div>
             </div>
         </div>
 
-
+        <div class="container">
+            <div class="jumbotron" ng-if="!hash_tag">
+                <p>
+                    Just few steps away. Please
+                    <a class="btn btn-primary btn-lg" ng-click="">subscribe</a>
+                    and start receiving HashTag Feed.
+                </p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="record in records">
+                    <span ng-bind="record.text"></span>
+                </li>
+            </ul>
+        </div>
         <!-- Third party Libraries -->
         <script src="/libs/angular/angular.min.js"></script>
         <script src="/libs/angular-bootstrap/ui-bootstrap.min.js"></script>
         <script src="/libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/libs/angular-socket-io/socket.min.js"></script>
 
         <!-- Application javascripts -->
         <script src="/js/main.js"></script>
+        <script src="/js/services/HashTagFeed.js"></script>
         <script src="/js/controllers/AppCtrl.js"></script>
 
     </body>
