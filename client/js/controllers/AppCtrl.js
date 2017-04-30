@@ -8,12 +8,10 @@ angular.module('app')
     $scope.input= {
         hash_tag    : ""
     };
+    $scope.edit_mode= false;
+    $scope.hash_tag = undefined;
 
-    $scope.hash_tag= undefined;
     $scope.init= function () {
-        if ($scope.hash_tag) {
-            $scope.input.hash_tag= $scope.hash_tag;
-        }
         var mySocket = socketFactory();
         HashTagFeed.get($scope.hash_tag)
              .then(function (res) {
@@ -24,6 +22,15 @@ angular.module('app')
             });
     };
 
+    $scope.editSubscription= function (e) {
+        if (e){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        $scope.input.hash_tag= $scope.hash_tag || "";
+        //TODO: Show sweet alert
+    };
+
     $scope.subscribe= function (e) {
         if (e){
             e.preventDefault();
@@ -31,12 +38,16 @@ angular.module('app')
         }
 
         HashTagFeed.subscribe($scope.input.hash_tag)
-            .then(function () {
-                
+            .then(function (res) {
+                $scope.hash_tag= res.data.record.hash_tag;
             })
             .catch(function () {
                 
             });
+    };
+
+    $scope.loadUpdates= function (next) {
+
     };
 
 });

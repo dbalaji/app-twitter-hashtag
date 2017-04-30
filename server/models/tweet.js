@@ -7,24 +7,27 @@ module.exports= function (app) {
     var schema= new Schema({
         "hash_tag"      : {
             type        : String,
-            index       : true
+            index       : true,
+            required    : true
+        },
+        "batch_id"      : {
+            type        : Number,
+            required    : true
         },
         "created_at"    : {
-            type        : Date
+            type        : Date,
+            required    : true
             //"Sat Apr 29 02:30:06 +0000 2017"
-        },
-        "id"            : {
-            type        : Number,
-            index       : {unique: true}
-            //858146342534877200
         },
         "id_str"        : {
             type        : String,
+            required    : true,
             index       : {unique: true}
             //"858146342534877184"
         },
         "text"          : {
-            type        : String
+            type        : String,
+            required    : true
             //"Enroll for \"To Do List\" Course for FREE\nStart coding projects in #JavaScript\nhttps://t.co/JYGFEU8Lv1\n\n#nodejs… https://t.co/dLYkIRzPyP"
         },
         "truncated"     : {
@@ -161,9 +164,12 @@ module.exports= function (app) {
         },
         "lang"              : {
             type            : String,
+            default         : "en",
             enum            : ["en"]
         }
     });
+
+    schema.index({hash_tag: 1, batch_id: 1});
 
     return schema;
 };

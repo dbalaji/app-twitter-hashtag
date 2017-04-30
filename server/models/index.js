@@ -5,6 +5,7 @@ const path  = require("path"),
 mongoose.Promise = require('bluebird'); //set mongoose with promise library
 
 const COLLECTIONS= {
+    id_seq      : true,
     tweet       : true,
     subscription: true
 };
