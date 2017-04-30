@@ -3,6 +3,7 @@ const path  = require('path');
 
 const express   = require('express'),
     logger      = require('morgan'),
+    bodyParser  = require('body-parser'),
     async       = require('async'),
     ejs         = require('ejs');
 
@@ -23,7 +24,9 @@ module.exports= function(done_cb) {
 
     app.set("port", DEFAULT_PORT);
 
-    //TODO: Need to setup Logger
+    //app.use(logger('combined'))
+    app.use(bodyParser.json({limit:"2mb"}));
+    app.use(bodyParser.urlencoded({limit:"2mb", extended: false }));
 
     // view engine setup
     app.set('views', VIEWS_DIR);

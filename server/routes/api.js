@@ -9,11 +9,12 @@ module.exports= function (app) {
      * @description: Updates subscription #tag
      */
     app.patch("/api/subscription", function (req, res, next) {
-        if (!req.query.hash_tag){
+        if (!req.body.hash_tag){
             //TODO: Need to send mandatory parameters empty error message
             return res.status(500);
         }
-        app.locals.service.twitter.subscribe(req.query.hash_tag, function (err, subscription) {
+        app.locals.service.twitter.subscribe(req.body.hash_tag, function (err, subscription) {
+            console.log("done sub", subscription);
             if (err){
                 res.status(500);
                 res.json({error: err});

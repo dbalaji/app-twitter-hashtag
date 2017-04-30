@@ -7,13 +7,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link rel="stylesheet" href="/libs/bootswatch-dist/css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css" media="screen">
+        <link rel="stylesheet" href="/libs/sweetalert2/sweetalert2.min.css" media="screen">
         <link rel="stylesheet" href="/css/custom.css" media="screen">
     </head>
     <body ng-controller="AppCtrl" ng-init="hash_tag='<%=hash_tag%>';init();">
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a href="" class="navbar-brand" title="Click to update #Tag">
+                    <a href="" class="navbar-brand"
+                       title="Click to update #Tag"
+                        ng-click="openSubscriptionDlg()">
                         <i class="fa fa-twitter"></i> #<span ng-bind="hash_tag"></span>
                     </a>
                     <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -51,8 +54,8 @@
         <div class="container">
             <div class="jumbotron" ng-if="!hash_tag">
                 <p>
-                    Just few steps away. Please
-                    <a class="btn btn-primary btn-lg" ng-click="">subscribe</a>
+                    Just a step away. Please
+                    <a class="btn btn-primary btn-lg" ng-click="openSubscriptionDlg($event)">subscribe</a>
                     and start receiving HashTag Feed.
                 </p>
             </div>
@@ -70,7 +73,8 @@
                         </div>
                         <div class="media-body">
                             <h6 class="media-heading">
-                                <span ng-bind="record.user.name"></span> : <span ng-bind="record.created_at|fromNow"></span>
+                                <span ng-bind="record.user.name"></span>
+                                <small class="text-muted" ng-bind="record.created_at|fromNow"></small>
                             </h6>
                             <span ng-bind="record.text"></span>
                         </div>
@@ -83,6 +87,39 @@
             </div>
 
         </div>
+
+        <script type="text/ng-template" id="subscription_dlg.html">
+            <div class="modal-header">
+                <h3 class="modal-title text-center">
+                    Subscribe to #Tag
+                </h3>
+            </div>
+            <form class="form-horizontal" ng-submit="subscribe($event)">
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text"
+                               class="form-control"
+                               ng-model="input.hash_tag"
+                               ng-disabled="is_subscribing"
+                               placeholder="#Tag"
+                               required />
+                    </div>
+                </div>
+                <div class="modal-footer text-center" ng-if="!is_subscribing">
+                    <button type="button"
+                            class="btn btn-link"
+                            ng-click="dismissSubscriptionDlg()">Cancel</button>
+                    <button type="submit"
+                            class="btn btn-primary"
+                            ng-disabled="hash_tag && (hash_tag === input.hash_tag)">
+                        Subscribe</button>
+                </div>
+                <div class="modal-footer text-center" ng-if="is_subscribing">
+                    Please wait... Subscribing...
+                </div>
+            </form>
+        </script>
+
         <!-- Third party Libraries -->
         <script src="/libs/angular/angular.min.js"></script>
         <script src="/libs/angular-bootstrap/ui-bootstrap.min.js"></script>
@@ -90,6 +127,7 @@
         <script src="/libs/moment/min/moment.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/libs/angular-socket-io/socket.min.js"></script>
+        <script src="/libs/sweetalert2/sweetalert2.min.js"></script>
 
         <!-- Application javascripts -->
         <script src="/js/main.js"></script>

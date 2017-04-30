@@ -49,9 +49,6 @@ module.exports= function (app, done_cb) {
                 if (err){
                     return invokeDoneCB(err);
                 }
-                record= {
-                    hash_tag: "Nodejs"
-                };
                 if (!record){
                     console.log("No Active subscription found!");
                     return invokeDoneCB();
@@ -91,6 +88,7 @@ module.exports= function (app, done_cb) {
                 if (!record){
                     record= new SubscriptionModel({hash_tag: hash_tag, created_at: new Date(), modified_at: new Date()});
                 }
+                record.hash_tag= hash_tag;
                 record.modified_at= new Date();
                 record.save(function (err) {
                     if (err){
@@ -100,7 +98,7 @@ module.exports= function (app, done_cb) {
                     destroyFeed();
                     _feed= new Feed(_hash_tag, _twitter, app);
                     _feed.start();
-                    return invokeDoneCB();
+                    return invokeDoneCB(err, record);
                 });
             });
         },
@@ -217,12 +215,12 @@ Feed.prototype.start= function () {
                     if (!params.since_id){
                         //If this is first time, don't get older tweets
                         var refresh_query= url.parse(meta_data.refresh_url, true).query;
-                        params.since_id= refresh_query.since_id;
+                        self._base_params.since_id= refresh_query.since_id;
                         return next();
                     }
                     if (!meta_data.next_results){
                         var refresh_query= url.parse(meta_data.refresh_url, true).query;
-                        params.since_id= refresh_query.since_id;
+                        self._base_params.since_id= refresh_query.since_id;
                         return next();
                     }
                     var next_results_query= url.parse(meta_data.next_results, true).query;
