@@ -1,16 +1,13 @@
 
 var modules=[
-    //'ngSanitize',
     "ui.bootstrap",
     "btford.socket-io",
-    'infinite-scroll'
-    //"sticky",
-    //'ng-sweet-alert'
+    "infinite-scroll",
+    "toastr"
 ];
 
 //Initialize main app here.
 angular.module('app', modules);
-
 
 angular.module('app')
 .config(['$httpProvider','$compileProvider', '$locationProvider', '$provide',
@@ -41,11 +38,24 @@ angular.module('app')
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|blob|data):/);
     $locationProvider.html5Mode(false).hashPrefix('!');
 }]);
+
+angular.module('app')
+.config(function(toastrConfig) {
+    angular.extend(toastrConfig, {
+        autoDismiss: true,
+        containerId: 'toast-container',
+        maxOpened: 1,
+        newestOnTop: true,
+        positionClass: 'toast-top-right',
+        preventDuplicates: false,
+        preventOpenDuplicates: false,
+        target: 'body'
+    });
+});
 ;
 
 angular.module('app')
 .factory("HashTagFeed", function ($http, $q, socketFactory) {
-    //TODO: need to maintain the state here
     return {
         startWatching: function () {
             return socketFactory();
@@ -86,7 +96,7 @@ angular.module('app')
  */
 
 angular.module('app')
-.controller("AppCtrl", function($uibModal, $scope, HashTagFeed){
+.controller("AppCtrl", function($timeout, $uibModal, $scope, toastr, HashTagFeed){
 
     $scope.input= {
         hash_tag    : ""
@@ -96,21 +106,30 @@ angular.module('app')
     $scope.socket;
     $scope.is_loading= false;
     $scope.new_tweets= [];
+    $scope.timeout_handle= undefined;
 
     $scope.init= function () {
         $scope.socket= HashTagFeed.startWatching();
         $scope.socket.forward('new', $scope);
         $scope.$on('socket:new', function (ev, new_tweets) {
-            for (var i=new_tweets.length-1; i>=0; i--){
-                var t= new_tweets[i]
-                t.is_new= true;
+            for (var i=0, n=new_tweets.length; i<n; i++){
+                var t= new_tweets[i];
                 $scope.new_tweets.push(t);
-                $scope.records.unshift(t);
             }
+            $scope.clearNewFlag();
         });
         if ($scope.hash_tag){
             $scope.load();
         }
+    };
+
+    $scope.clearNewFlag= function () {
+        $timeout(function () {
+            $scope.records.unshift($scope.new_tweets.pop());
+            if ($scope.new_tweets.length >0){
+                $scope.clearNewFlag();
+            }
+        }, 5000);
     };
 
     $scope.openSubscriptionDlg= function (e) {
@@ -149,9 +168,10 @@ angular.module('app')
                     'success'
                 );
                 $scope.records= [];
-                $scope.loadUpdates();
+                $scope.load();
             })
             .catch(function (err) {
+                alert(err);
                 swal(
                     'Could not subscribe!',
                     'Please try again after some time!',
@@ -173,8 +193,7 @@ angular.module('app')
             })
             .catch(function (err) {
                 $scope.is_loading= false;
-                console.log(err);
-                //TODO: need to show error message as transient dialog
+                toastr.error('Could not load tweets', 'Warning');
             });
     };
 
@@ -198,8 +217,7 @@ angular.module('app')
             })
             .catch(function (err) {
                 $scope.is_loading= false;
-                console.log(err);
-                //TODO: need to show error message as transient dialog
+                toastr.error('Could not load more tweets', 'Warning');
             });
     };
 
