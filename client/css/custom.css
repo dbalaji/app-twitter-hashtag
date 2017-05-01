@@ -1,15 +1,15 @@
 
 
 body { 
-    padding-top: 70px;
-    /** This is fix for bootstrap fixed navbar **/
+    padding-top: 70px;/** This is fix for bootstrap fixed navbar **/
+    padding-bottom: 20px;
 }
 
 .profile-pic {
     display: inline-block;
     width: 48px;
     height: 48px;
-    border-radius: 50%;
+    border-radius: 10%; /** adjust this for curvature */
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;

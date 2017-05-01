@@ -1,0 +1,32 @@
+<!-- reference http://answers.squarespace.com/questions/6003/how-can-i-add-a-scroll-to-top-button -->
+<button id="scroll_top" type="button" class="btn btn-default navbar-btn"
+        title="TOP"
+        style="background:transparent">
+    <i class="fa fa-chevron-up"></i>
+</button>
+
+<script type="text/javascript">
+    window.onload =function () {
+        window.onscroll = function () {
+            if (window.scrollY > 100) {
+                document.getElementById('scroll_top').style.display='block';
+            } else {
+                document.getElementById('scroll_top').style.display='none';
+            }
+        };
+
+        document.getElementById('scroll_top').onclick=function () {
+            window.scrollTo(0,0);
+            return false;
+        };
+    };
+</script>
+<style type="text/css">
+    #scroll_top {
+        position: fixed;
+        bottom: 100px;
+        right: 0px;
+        font-size: 20px;
+        display: none;
+    }
+</style>

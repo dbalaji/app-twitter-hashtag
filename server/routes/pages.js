@@ -4,7 +4,10 @@
  */
 module.exports= function (app) {
     app.get("/", function (req, res, next) {
-        var hash_tag= app.locals.service.twitter.getSubscriptionHashTag();
-        res.render("index", {hash_tag: hash_tag});
+        var exported= {
+            hash_tag: app.locals.service.twitter.getSubscriptionHashTag(),
+            pkg_info: app.locals.pkg_info
+        };
+        res.render("index", exported);
     });
 };

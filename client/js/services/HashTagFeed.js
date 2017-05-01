@@ -21,9 +21,9 @@ angular.module('app')
         unsubscribe: function () {
             return $http.delete("/api/subscription");
         },
-        get: function (hash_tag) {
-            return $http.get("/api/feed", {params:{hash_tag:hash_tag}});
-        },
+        get: function (params) {
+            return $http.get("/api/feed", {params:params});
+        }
 
     };
 });

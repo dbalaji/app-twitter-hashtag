@@ -35,23 +35,14 @@ module.exports= function (app) {
     });
 
     app.get("/api/feed", function (req, res, next) {
-        if (!req.query.hash_tag){
-            //TODO: Need to send mandatory parameters empty error message
-            return res.status(500);
-        }
-
-        var options= {
-            max_id  : req.query.max_id,
-            since_id: req.query.since_id
-        };
-
-        app.locals.service.twitter.getFeed(req.query.hash_tag, options, function (err, result) {
+        app.locals.service.twitter.getFeed(req.query, function (err, result) {
             if (err){
+                console.log(err);
                 res.status(500);
                 res.json({error: err});
             }
             else {
-                res.json({records: result.records, meta: result.meta});
+                res.json(result);
             }
         });
     });

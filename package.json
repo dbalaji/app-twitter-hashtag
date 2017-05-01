@@ -1,9 +1,9 @@
 {
-  "name": "HashTagFeed2",
-  "description": "A feed for the #HasTag specified by the user",
-  "version": "0.1.0",
+  "name": "HashTagFeed",
+  "description": "A feed for the #HasTag given by the user",
+  "version": "0.2.0",
   "author": {
-    "name": "D Balaji",
+    "name": "Balaji D",
     "email": "balaji.doniparthi@gmail.com"
   },
   "homepage": "https://www.servicetiket.com",

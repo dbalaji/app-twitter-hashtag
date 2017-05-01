@@ -6,12 +6,14 @@ const clone = require("clone");
 const url   = require('url');
 
 const POLL_INTERVAL= 2*60*1000; //2 Minutes
-const MAX_RESULTS_PER_REQUEST= 50;
+const MAX_FETCH_PER_REQUEST= 50;
 const DEFAULT_PARAMS    = {
     result_type         : 'recent',
     lang                : 'en',
-    count               : MAX_RESULTS_PER_REQUEST
+    count               : MAX_FETCH_PER_REQUEST
 };
+
+const MAX_RESULTS_PER_PAGE =10;
 
 /**
  * @description : Initializes twitter service
@@ -124,20 +126,39 @@ module.exports= function (app, done_cb) {
         getSubscriptionHashTag: function () {
             return _hash_tag;
         },
-        getFeed: function (a_hash_tag, a_options, cb) {
-            if (a_hash_tag !== _hash_tag){
-                return cb({message:"Hash tag "+a_hash_tag+" not subscribed any more"});
+        getFeed: function (query, cb) {
+            if (!query.hash_tag){
+                return cb({message: "Hash tag, required param not sent!"});
             }
+            if (query.hash_tag !== _hash_tag){
+                return cb({message:"Hash tag "+query.hash_tag+" not subscribed any more"});
+            }
+
             var options= {
-                limit   : 10,
-                skip    : a_options.limit,
-                sort    : {created_at: -1}
+                limit   : MAX_RESULTS_PER_PAGE,
+                skip    : Number(query.skip||"0"),
+                sort    : {id_str: -1}
             };
-            app.locals.models.tweet.find({hash_tag: _hash_tag}, {}, options, function (err, records) {
+            var condition= {
+                hash_tag: query.hash_tag
+            };
+            if (query.max_id){
+                condition.id_str=  {$lt: query.max_id};
+            }
+            app.locals.models.tweet.find(condition, {}, options, function (err, records) {
                 if (err){
                     return cb(err);
                 }
-                cb(err, {records:records});
+                var meta= {};
+                if (records.length === MAX_RESULTS_PER_PAGE){
+                    meta.next= {
+                        hash_tag: _hash_tag,
+                        skip    : (options.skip||0)+records.length,
+                        max_id  : records[records.length-1].id_str
+                    };
+                }
+
+                cb(err, {records:records, meta: meta});
             });
         }
     };

@@ -2,7 +2,8 @@
 var modules=[
     //'ngSanitize',
     "ui.bootstrap",
-    "btford.socket-io"
+    "btford.socket-io",
+    'infinite-scroll'
     //"sticky",
     //'ng-sweet-alert'
 ];
