@@ -1,0 +1,30 @@
+{
+  "apps": [
+    {
+      "id": "core",
+      "cwd": "",
+      "src_dir": "client/libs/",
+      "sources": [
+        "angular/angular.min.js",
+        "angular-bootstrap/ui-bootstrap.min.js",
+        "angular-bootstrap/ui-bootstrap-tpls.min.js",
+        "moment/min/moment.min.js",
+        "angular-socket-io/socket.min.js",
+        "sweetalert2/sweetalert2.min.js",
+        "infinite-scroll/ng-infinite-scroll.min.js"
+      ]
+    },
+    {
+      "id": "main",
+      "cwd": "",
+      "src_dir": "client/js/",
+      "sources": [
+        "main.js",
+        "services/*.js",
+        "filters/*.js",
+        "directives/*.js",
+        "controllers/*.js"
+      ]
+    }
+  ]
+}

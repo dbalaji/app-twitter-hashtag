@@ -15,9 +15,6 @@ angular.module('app')
     $scope.new_tweets= [];
 
     $scope.init= function () {
-        if (!$scope.hash_tag){
-            //show sweet alert
-        }
         $scope.socket= HashTagFeed.startWatching();
         $scope.socket.forward('new', $scope);
         $scope.$on('socket:new', function (ev, new_tweets) {
@@ -28,7 +25,9 @@ angular.module('app')
                 $scope.records.unshift(t);
             }
         });
-        $scope.load();
+        if ($scope.hash_tag){
+            $scope.load();
+        }
     };
 
     $scope.openSubscriptionDlg= function (e) {

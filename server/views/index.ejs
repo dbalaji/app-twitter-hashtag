@@ -104,21 +104,10 @@
         <%include ./_subscription_dlg %>
         <%include ./_scroll_top %>
 
-        <!-- Third party Libraries -->
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/libs/angular/angular.min.js"></script>
-        <script src="/libs/angular-bootstrap/ui-bootstrap.min.js"></script>
-        <script src="/libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-        <script src="/libs/moment/min/moment.min.js"></script>
-        <script src="/libs/angular-socket-io/socket.min.js"></script>
-        <script src="/libs/sweetalert2/sweetalert2.min.js"></script>
-        <script src="/libs/infinite-scroll/ng-infinite-scroll.min.js"></script>
+        <script src="/dist/js/core.js?v=<%=pkg_info.version%>"></script>
+        <script src="/dist/js/main.js?v=<%=pkg_info.version%>"></script>
 
-        <!-- Application javascripts -->
-        <script src="/js/main.js"></script>
-        <script src="/js/filters/fromNow.js"></script>
-        <script src="/js/services/HashTagFeed.js"></script>
-        <script src="/js/controllers/AppCtrl.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
 
     </body>
 </html>
