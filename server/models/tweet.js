@@ -169,7 +169,7 @@ module.exports= function (app) {
         }
     });
 
-    schema.index({hash_tag: 1, batch_id: 1});
+    schema.index({hash_tag: 1, id_str: -1});
 
     return schema;
 };

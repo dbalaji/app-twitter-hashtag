@@ -1,0 +1,25 @@
+
+<div class="media-left media-middle">
+    <a href="">
+        <div class="media-object profile-pic"
+             style="background:url({{record.user.profile_image_url}})"
+             alt="Avatar">
+        </div>
+    </a>
+    </div>
+    <div class="media-body">
+    <h6 class="media-heading">
+        <span ng-bind="record.user.name"></span>
+        <span class="text-muted">
+            @<span ng-bind="record.user.screen_name"></span>
+
+            <small ng-bind="record.created_at|fromNow"></small>
+        </span>
+        <%if(is_new) {%>
+        <span class="label label-default">
+            new
+        </span>
+        <%}%>
+    </h6>
+    <span ng-bind="record.text"></span>
+</div>

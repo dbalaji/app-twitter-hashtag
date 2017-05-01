@@ -50,36 +50,21 @@
             <div class="row" ng-if="hash_tag">
                 <div class="col-md-8" infinite-scroll="loadMore()" infinite-scroll-distance="3">
                     <hr />
-                    <div class="media tweet" ng-repeat="record in records">
-                        <div class="media-left media-middle">
-                            <a href="">
-                                <div class="media-object profile-pic"
-                                     style="background:url({{record.user.profile_image_url}})"
-                                     alt="Avatar">
-                                </div>
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h6 class="media-heading">
-                                <span ng-bind="record.user.name"></span>
-                                <span class="text-muted">
-                                    @<span ng-bind="record.user.screen_name"></span>
-
-                                    <small ng-bind="record.created_at|fromNow"></small>
-                                </span>
-                                <span class="label label-default" ng-if="record.is_new">
-                                    new
-                                </span>
-                            </h6>
-                            <span ng-bind="record.text"></span>
-                        </div>
+                    <div class="media tweet" ng-repeat="record in new_tweets">
+                        <% var is_new=true; %>
+                        <%include ./_tweet %>
                     </div>
+                    <div class="media tweet" ng-repeat="record in records">
+                        <% var is_new=false; %>
+                        <%include ./_tweet %>
+                    </div>
+                    <p>&nbsp;</p><!-- should be coming from style ideally -->
                     <div class="text-center" ng-if="is_loading">
                         <i class="fa fa-refresh fa-spin" style="font-size:24px"></i>
                     </div>
-                    <div class="text-success text-center" ng-if="!next_params">
+                    <p class="text-success text-center" ng-if="!next_params">
                         ----------- All tweets loaded -----------
-                    </div>
+                    </p>
 
                 </div>
                 <div class="col-md-4">
