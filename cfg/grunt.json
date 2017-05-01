@@ -11,6 +11,8 @@
         "moment/min/moment.min.js",
         "angular-socket-io/socket.min.js",
         "sweetalert2/sweetalert2.min.js",
+        "/angular-toastr/angular-toastr.min.js",
+        "/angular-toastr/angular-toastr.tpls.min.js",
         "infinite-scroll/ng-infinite-scroll.min.js"
       ]
     },

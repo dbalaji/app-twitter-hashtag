@@ -1,16 +1,13 @@
 
 var modules=[
-    //'ngSanitize',
     "ui.bootstrap",
     "btford.socket-io",
-    'infinite-scroll'
-    //"sticky",
-    //'ng-sweet-alert'
+    "infinite-scroll",
+    "toastr"
 ];
 
 //Initialize main app here.
 angular.module('app', modules);
-
 
 angular.module('app')
 .config(['$httpProvider','$compileProvider', '$locationProvider', '$provide',
@@ -41,3 +38,17 @@ angular.module('app')
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|blob|data):/);
     $locationProvider.html5Mode(false).hashPrefix('!');
 }]);
+
+angular.module('app')
+.config(function(toastrConfig) {
+    angular.extend(toastrConfig, {
+        autoDismiss: true,
+        containerId: 'toast-container',
+        maxOpened: 1,
+        newestOnTop: true,
+        positionClass: 'toast-top-right',
+        preventDuplicates: false,
+        preventOpenDuplicates: false,
+        target: 'body'
+    });
+});

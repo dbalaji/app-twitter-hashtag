@@ -1,7 +1,6 @@
 
 angular.module('app')
 .factory("HashTagFeed", function ($http, $q, socketFactory) {
-    //TODO: need to maintain the state here
     return {
         startWatching: function () {
             return socketFactory();

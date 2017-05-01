@@ -3,7 +3,7 @@
  */
 
 angular.module('app')
-.controller("AppCtrl", function($timeout, $uibModal, $scope, HashTagFeed){
+.controller("AppCtrl", function($timeout, $uibModal, $scope, toastr, HashTagFeed){
 
     $scope.input= {
         hash_tag    : ""
@@ -100,8 +100,7 @@ angular.module('app')
             })
             .catch(function (err) {
                 $scope.is_loading= false;
-                console.log(err);
-                //TODO: need to show error message as transient dialog
+                toastr.error('Could not load tweets', 'Warning');
             });
     };
 
@@ -125,8 +124,7 @@ angular.module('app')
             })
             .catch(function (err) {
                 $scope.is_loading= false;
-                console.log(err);
-                //TODO: need to show error message as transient dialog
+                toastr.error('Could not load more tweets', 'Warning');
             });
     };
 
