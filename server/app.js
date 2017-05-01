@@ -8,8 +8,10 @@ const express   = require('express'),
     ejs         = require('ejs');
 
 const DEFAULT_PORT  = 3000;
-const VIEWS_DIR     = "./views";
-const STATIC_DIR    = "../client"
+const VIEWS_DIR     = path.join(__dirname, "./views");
+const STATIC_DIR    = path.join(__dirname, "../client");
+const CONFIG_FILE   = path.join(__dirname, "../config/main.json");
+const PKG_JSON_FILE = path.join(__dirname, "../", "package.json");
 
 /**
  * @description : creates, initializes express app
@@ -19,8 +21,8 @@ module.exports= function(done_cb) {
 
     var app = express();
 
-    app.locals.cfg= require("../config/main.json");
-    app.locals.pkg_info= require(path.join(__dirname, "../", "package.json"));
+    app.locals.cfg= require(CONFIG_FILE);
+    app.locals.pkg_info= require(PKG_JSON_FILE);
 
     app.set("port", DEFAULT_PORT);
 
