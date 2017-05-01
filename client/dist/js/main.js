@@ -132,23 +132,22 @@ angular.module('app')
         }, 5000);
     };
 
-    $scope.openSubscriptionDlg= function (e) {
+    $scope.editHashTag= function (e) {
         if (e){
             e.preventDefault();
             e.stopPropagation();
         }
+        $scope.edit_mode=true;
         $scope.input.hash_tag= $scope.hash_tag || "";
-        $scope.subscription_dlg= $uibModal.open({
-            templateUrl : 'subscription_dlg.html',
-            size        : "md",
-            scope       : $scope
-        });
+        $timeout(function () {
+            var input = document.getElementById('hash_tag');
+            input.focus();
+            input.select();
+        }, 2);
     };
 
-    $scope.dismissSubscriptionDlg= function(){
-        $scope.is_subscribing= false;
-        $scope.subscription_dlg.dismiss();
-        $scope.is_subscribing= false;
+    $scope.cancelEditHashTag= function () {
+        $scope.edit_mode= false;
     };
 
     $scope.subscribe= function (e) {
@@ -156,12 +155,16 @@ angular.module('app')
             e.preventDefault();
             e.stopPropagation();
         }
+        if ($scope.is_subscribing){
+            return;
+        }
         $scope.is_subscribing= true;
 
         HashTagFeed.subscribe($scope.input.hash_tag)
             .then(function (subscription) {
                 $scope.hash_tag= subscription.hash_tag;
-                $scope.dismissSubscriptionDlg();
+                $scope.edit_mode= false;
+                $scope.is_subscribing= false;
                 swal(
                     '',
                     'Successfully subscribed!',
@@ -171,13 +174,13 @@ angular.module('app')
                 $scope.load();
             })
             .catch(function (err) {
-                alert(err);
                 swal(
                     'Could not subscribe!',
                     'Please try again after some time!',
                     'error'
                 );
-                $scope.dismissSubscriptionDlg();
+                $scope.edit_mode= false;
+                $scope.is_subscribing= false;
             });
     };
 

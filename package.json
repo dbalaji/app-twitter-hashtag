@@ -1,7 +1,7 @@
 {
   "name": "HashTagFeed",
   "description": "A feed for the #HasTag given by the user",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "Balaji D",
     "email": "balaji.doniparthi@gmail.com"
