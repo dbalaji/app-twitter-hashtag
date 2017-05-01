@@ -29,7 +29,7 @@ events.
 
 ## Demo
 
-[Demo](http://35.154.107.94/ "Demo on AWS").
+[Demo](http://34.205.135.253/ "Demo on AWS").
 
 ## References
 
