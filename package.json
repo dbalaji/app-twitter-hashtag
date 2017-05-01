@@ -41,7 +41,7 @@
   },
   "optionalDependencies": {},
   "scripts": {
-    "start": "node ./server/bin/www"
+    "start": "node ./server/main.js"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
