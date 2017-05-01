@@ -15,6 +15,8 @@ const DEFAULT_PARAMS    = {
 
 const MAX_RESULTS_PER_PAGE =10;
 
+const DEFAULT_SUBSCRIPTION_TAG= "nodejs";
+
 /**
  * @description : Initializes twitter service
  * @param app   : Express app handle
@@ -43,7 +45,13 @@ module.exports= function (app, done_cb) {
         init    : function (cb) {
             _twitter= new twit(app.locals.cfg.twitter);
 
-            var invokeDoneCB= function (err) {
+            var invokeDoneCB= function (err, record) {
+                if (!err){
+                    _hash_tag= record.hash_tag;
+                    _feed= new Feed(_hash_tag, _twitter, app);
+                    _feed.start();
+                    _feed.setSocket(_socket);
+                }
                 cb(err);
             };
 
@@ -53,14 +61,13 @@ module.exports= function (app, done_cb) {
                     return invokeDoneCB(err);
                 }
                 if (!record){
-                    console.log("No Active subscription found!");
-                    return invokeDoneCB();
+                    record= new SubscriptionModel({hash_tag: DEFAULT_SUBSCRIPTION_TAG});
+                    record.save(function (err) {
+                        invokeDoneCB(err, !err? record: undefined);
+                    });
+                    return;
                 }
-                _hash_tag= record.hash_tag;
-                _feed= new Feed(_hash_tag, _twitter, app);
-                _feed.start();
-                _feed.setSocket(_socket);
-                return invokeDoneCB();
+                return invokeDoneCB(undefined, record);
             });
 
         },

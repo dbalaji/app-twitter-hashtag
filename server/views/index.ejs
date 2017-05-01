@@ -17,8 +17,11 @@
                 <div class="navbar-header">
                     <a href="" class="navbar-brand"
                        title="Click to update #Tag"
-                        ng-click="openSubscriptionDlg()">
-                        <i class="fa fa-twitter"></i> #<span ng-bind="hash_tag"></span>
+                        ng-click="editHashTag()">
+                        <i class="fa fa-twitter"></i>
+                        <span ng-if="!edit_mode">
+                            #<span ng-bind="hash_tag"></span>
+                        </span>
                     </a>
                     <!--<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">-->
                         <!--<span class="icon-bar"></span>-->
@@ -26,28 +29,32 @@
                         <!--<span class="icon-bar"></span>-->
                     <!--</button>-->
                 </div>
-                <div class="navbar-collapse collapse" id="navbar-main">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <!--<li>-->
-                            <!--<a class="btn btn-link">-->
-                                <!--<i class="fa fa-cogs">Settings</i>-->
-                            <!--</a>-->
-                        <!--</li>-->
-                    </ul>
-                </div>
+                <form class="navbar-form navbar-left" ng-submit="subscribe($event)" ng-if="edit_mode">
+                    <div class="form-group">
+                        <input type="text"
+                               id="hash_tag"
+                               class="form-control input-md text-center large-text"
+                               ng-model="input.hash_tag"
+                               ng-disabled="is_subscribing"
+                               placeholder="#Tag"
+                               required />
+                    </div>
+                    <button type="submit"
+                            class="btn btn-link"
+                            ng-disabled="is_subscribing|| (hash_tag && (hash_tag === input.hash_tag))">
+                        Update
+                    </button>
+                    <button type="button"
+                            class="btn btn-link btn-sm"
+                            ng-disabled="is_subscribing"
+                        ng-click="cancelEditHashTag()">
+                        Cancel
+                    </button>
+                </form>
             </div>
         </div>
 
         <div class="container">
-            <div class="jumbotron" ng-if="!hash_tag">
-                <p>
-                    Just a step away. Please
-                    <a class="btn btn-primary btn-lg" ng-click="openSubscriptionDlg($event)">subscribe</a>
-                    and start receiving HashTag Feed.
-                </p>
-            </div>
             <div class="row" ng-if="hash_tag">
                 <div class="col-md-8" infinite-scroll="loadMore()" infinite-scroll-distance="3">
                     <hr />
@@ -74,8 +81,7 @@
             </div>
         </div>
 
-        <div class="container">
-            <hr />
+        <div class="container footer">
             <div class="row">
                 <div class="col-xs-6">
                     <b><%=pkg_info.author.name%></b>
@@ -87,7 +93,6 @@
 
         </div>
 
-        <%include ./_subscription_dlg %>
         <%include ./_scroll_top %>
 
         <script src="/dist/js/core.js?v=<%=pkg_info.version%>"></script>
