@@ -16,10 +16,10 @@ require("./app")(function (err, app) {
     /**
      * Setup Socket.io
      */
-        //TODO: Complete this
     var io = require('socket.io')(server);
-    io.on('connection', function(){
-        console.log("connection active!");
+    io.on('connection', function(socket){
+        console.log("New socket connection!");
+        app.locals.service.twitter.setSocket(socket);
     });
 
     /**

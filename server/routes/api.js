@@ -14,7 +14,6 @@ module.exports= function (app) {
             return res.status(500);
         }
         app.locals.service.twitter.subscribe(req.body.hash_tag, function (err, subscription) {
-            console.log("done sub", subscription);
             if (err){
                 res.status(500);
                 res.json({error: err});

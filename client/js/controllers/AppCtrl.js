@@ -3,19 +3,28 @@
  */
 
 angular.module('app')
-.controller("AppCtrl", function($uibModal, $scope, HashTagFeed, socketFactory){
+.controller("AppCtrl", function($uibModal, $scope, HashTagFeed){
 
     $scope.input= {
         hash_tag    : ""
     };
     $scope.edit_mode= false;
     $scope.hash_tag = undefined;
+    $scope.socket;
 
     $scope.init= function () {
         if (!$scope.hash_tag){
             //show sweet alert
         }
-        var mySocket = socketFactory();
+        $scope.socket= HashTagFeed.startWatching();
+        $scope.socket.forward('new', $scope);
+        $scope.$on('socket:new', function (ev, new_tweets) {
+            for (var i=new_tweets.length-1; i>=0; i--){
+                var t= new_tweets[i]
+                t.is_new= true;
+                $scope.records.unshift(t);
+            }
+        });
         $scope.loadUpdates();
     };
 
@@ -27,6 +36,7 @@ angular.module('app')
         $scope.input.hash_tag= $scope.hash_tag || "";
         $scope.subscription_dlg= $uibModal.open({
             templateUrl : 'subscription_dlg.html',
+            size        : "md",
             scope       : $scope
         });
     };
@@ -34,8 +44,8 @@ angular.module('app')
     $scope.dismissSubscriptionDlg= function(){
         $scope.is_subscribing= false;
         $scope.subscription_dlg.dismiss();
+        $scope.is_subscribing= false;
     };
-
 
     $scope.subscribe= function (e) {
         if (e){
@@ -45,8 +55,8 @@ angular.module('app')
         $scope.is_subscribing= true;
 
         HashTagFeed.subscribe($scope.input.hash_tag)
-            .then(function (res) {
-                $scope.hash_tag= res.data.record.hash_tag;
+            .then(function (subscription) {
+                $scope.hash_tag= subscription.hash_tag;
                 $scope.dismissSubscriptionDlg();
                 swal(
                     '',
@@ -56,8 +66,13 @@ angular.module('app')
                 $scope.records= [];
                 $scope.loadUpdates();
             })
-            .catch(function () {
-                //show sweet alert of failure
+            .catch(function (err) {
+                swal(
+                    'Could not subscribe!',
+                    'Please try again after some time!',
+                    'error'
+                );
+                $scope.dismissSubscriptionDlg();
             });
     };
 

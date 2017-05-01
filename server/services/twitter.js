@@ -23,6 +23,7 @@ const DEFAULT_PARAMS    = {
 module.exports= function (app, done_cb) {
     var _twitter,
         _feed,
+        _socket,
         _hash_tag,
         _self;
 
@@ -56,9 +57,16 @@ module.exports= function (app, done_cb) {
                 _hash_tag= record.hash_tag;
                 _feed= new Feed(_hash_tag, _twitter, app);
                 _feed.start();
+                _feed.setSocket(_socket);
                 return invokeDoneCB();
             });
 
+        },
+        setSocket: function (socket) {
+            _socket= socket;
+            if (_feed){
+                _feed.setSocket(_socket);
+            }
         },
         subscribe: function (a_hash_tag, cb) {
             var hash_tag= a_hash_tag;
@@ -98,6 +106,7 @@ module.exports= function (app, done_cb) {
                     destroyFeed();
                     _feed= new Feed(_hash_tag, _twitter, app);
                     _feed.start();
+                    _feed.setSocket(_socket);
                     return invokeDoneCB(err, record);
                 });
             });
@@ -185,13 +194,14 @@ Feed.prototype.start= function () {
         };
 
         var fetch= function (next) {
-            console.log("Fetching...", params.since_id);
+            self._log("Fetching... since_id :"+ params.since_id+", max_id:"+params.max_id);
             self._twit.get('search/tweets', params, function(err, data) {
                 if (err){
                     return next(err);
                 }
                 var records     = data.statuses,
-                    meta_data   = data.search_metadata;
+                    meta_data   = data.search_metadata,
+                    tweets      = [];
 
                 var insertIntoCollection= function (record, next2) {
                     if (self._abort){
@@ -204,13 +214,21 @@ Feed.prototype.start= function () {
                     var doc= new self._model(record);
                     doc.hash_tag= self._hash_tag;
                     doc.batch_id= batch_id;
-                    doc.save(next2);
+                    doc.save(function (err) {
+                        if (!err){
+                            tweets.push(doc);
+                        }
+                        return next2();
+                    });
                 };
 
-                console.log("Received : "+records.length + " new results");
+                self._log("Received : "+records.length + " new results");
                 async.eachSeries(records, insertIntoCollection, function (err) {
                     if (err){
                         return next(err);
+                    }
+                    if (tweets.length >0){
+                        self._emit("new", tweets);
                     }
                     if (!params.since_id){
                         //If this is first time, don't get older tweets
@@ -236,10 +254,10 @@ Feed.prototype.start= function () {
         ];
         async.series(steps, function (err) {
             if (err){
-                console.log(err);
+                self._log(err);
             }
             if (self._abort){
-                console.log("Aborted");
+                self._log("Aborted");
                 return;
             }
             self._timeout_handle= setTimeout(doFetchAndSave, POLL_INTERVAL);
@@ -253,7 +271,7 @@ Feed.prototype.start= function () {
         }
         self._model.findOne({hash_tag: self._hash_tag}, {id_str:1}, {sort:{id_str:-1}}, function (err, tweet) {
             if (err){
-                console.log("Error while finding latest tweet in the subscribed hash tag");
+                self._log("Error while finding latest tweet");
                 return;
             }
             if (tweet){
@@ -270,4 +288,20 @@ Feed.prototype.stop= function () {
         clearTimeout(this._timeout_handle);
         this._timeout_handle= undefined;
     }
+};
+
+Feed.prototype.setSocket= function (socket) {
+    this._socket= socket;
+};
+
+Feed.prototype._emit= function (event, data) {
+    this._log("New event::"+ event);
+    if (this._socket){
+        this._log("Emitting "+event);
+        this._socket.emit(event, data);
+    }
+};
+
+Feed.prototype._log= function (message) {
+    console.log("#", this._hash_tag,">", message);
 };

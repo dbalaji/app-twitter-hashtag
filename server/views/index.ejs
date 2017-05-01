@@ -25,18 +25,6 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-                <form class="navbar-form navbar-left"
-                      role="search"
-                      ng-submit="subscribe($event)"
-                        ng-show="edit_mode">
-                    <div class="form-group">
-                        <input class="form-control"
-                               placeholder="#Tag"
-                               type="text"
-                                ng-model="input.hash_tag">
-                    </div>
-                    <button type="submit" class="btn btn-default">Subscribe</button>
-                </form>
                 <div class="navbar-collapse collapse" id="navbar-main">
                     <ul class="nav navbar-nav">
                     </ul>
@@ -59,11 +47,11 @@
                     and start receiving HashTag Feed.
                 </p>
             </div>
-            <div class="row">
-                <hr />
+            <div class="row" ng-if="hash_tag">
                 <div class="col-md-8">
-                    <div class="media" ng-repeat="record in records">
-                        <div class="media-left media-top">
+                    <hr />
+                    <div class="media tweet" ng-repeat="record in records">
+                        <div class="media-left media-middle">
                             <a href="">
                                 <div class="media-object profile-pic"
                                      style="background:url({{record.user.profile_image_url}})"
@@ -74,11 +62,17 @@
                         <div class="media-body">
                             <h6 class="media-heading">
                                 <span ng-bind="record.user.name"></span>
-                                <small class="text-muted" ng-bind="record.created_at|fromNow"></small>
+                                <span class="text-muted">
+                                    @<span ng-bind="record.user.screen_name"></span>
+
+                                    <small ng-bind="record.created_at|fromNow"></small>
+                                </span>
+                                <span class="label label-default" ng-if="record.is_new">
+                                    new
+                                </span>
                             </h6>
                             <span ng-bind="record.text"></span>
                         </div>
-                        <hr />
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -90,22 +84,23 @@
 
         <script type="text/ng-template" id="subscription_dlg.html">
             <div class="modal-header">
-                <h3 class="modal-title text-center">
+                <h4 class="modal-title text-center">
                     Subscribe to #Tag
-                </h3>
+                </h4>
+                <hr />
             </div>
-            <form class="form-horizontal" ng-submit="subscribe($event)">
-                <div class="modal-body">
-                    <div class="input-group">
-                        <input type="text"
-                               class="form-control"
-                               ng-model="input.hash_tag"
-                               ng-disabled="is_subscribing"
-                               placeholder="#Tag"
-                               required />
-                    </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" ng-submit="subscribe($event)">
+                <div class="form-group">
+                    <input type="text"
+                           id="hash_tag"
+                           class="form-control input-md text-center large-text"
+                           ng-model="input.hash_tag"
+                           ng-disabled="is_subscribing"
+                           placeholder="#Tag"
+                           required />
                 </div>
-                <div class="modal-footer text-center" ng-if="!is_subscribing">
+                <div class="text-center" ng-if="!is_subscribing">
                     <button type="button"
                             class="btn btn-link"
                             ng-click="dismissSubscriptionDlg()">Cancel</button>
@@ -114,18 +109,19 @@
                             ng-disabled="hash_tag && (hash_tag === input.hash_tag)">
                         Subscribe</button>
                 </div>
-                <div class="modal-footer text-center" ng-if="is_subscribing">
-                    Please wait... Subscribing...
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer text-center" ng-if="is_subscribing">
+                Please wait... Subscribing...
+            </div>
         </script>
 
         <!-- Third party Libraries -->
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/libs/angular/angular.min.js"></script>
         <script src="/libs/angular-bootstrap/ui-bootstrap.min.js"></script>
         <script src="/libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
         <script src="/libs/moment/min/moment.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
         <script src="/libs/angular-socket-io/socket.min.js"></script>
         <script src="/libs/sweetalert2/sweetalert2.min.js"></script>
 
